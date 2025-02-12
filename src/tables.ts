@@ -224,6 +224,7 @@ const createZeroTableBuilder = <
   const tableColumns = getTableColumns(table);
   const tableConfig = getTableConfigForDatabase(table);
 
+  // We still declare this array, but remove usage of column.primary below.
   const primaryKeysFromColumns: string[] = [];
 
   const columnsMapped = typedEntries(tableColumns).reduce(
@@ -271,9 +272,10 @@ const createZeroTableBuilder = <
             ? columnConfig.schema.optional
             : false;
 
-      if (column.primary) {
-        primaryKeysFromColumns.push(String(key));
-      }
+      // REMOVED: the block that pushed `primaryKeysFromColumns` via `column.primary`
+      // if (column.primary) {
+      //   primaryKeysFromColumns.push(String(key));
+      // }
 
       if (columnConfig && typeof columnConfig !== "boolean") {
         return {
@@ -305,6 +307,7 @@ const createZeroTableBuilder = <
     {} as Record<string, any>,
   );
 
+  // The existing logic that merges columns from tableConfig.primaryKeys remains intact
   const primaryKeys = [
     ...primaryKeysFromColumns,
     ...tableConfig.primaryKeys.flatMap((k) =>
